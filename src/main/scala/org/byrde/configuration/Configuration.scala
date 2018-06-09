@@ -24,5 +24,12 @@ class Configuration @Inject() () {
     server.getInt(".port")
 
   lazy val timeout: Timeout =
-    Timeout(underlyingConfig.getInt("akka.server.timeout") seconds)
+    Timeout(server.getInt("timeout") seconds)
+
+  lazy val corsConfiguration: CORSConfiguration =
+    CORSConfiguration(
+      server.getString("cors.origins").split(", "),
+      server.getString("cors.methods").split(", "),
+      server.getString("cors.headers").split(", ")
+    )
 }

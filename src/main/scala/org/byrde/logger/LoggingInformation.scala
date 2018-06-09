@@ -1,10 +1,11 @@
 package org.byrde.logger
 
-import play.api.libs.json.{ JsObject, JsString, Json }
+import org.byrde.services.ServiceRequestResponse
 
+import play.api.libs.json.{ JsObject, JsString, Json }
 import org.byrde.utils.OptionUtils._
 
-import akka.http.scaladsl.model.{ HttpRequest, IdHeader }
+import akka.http.scaladsl.model.{ HttpRequest, HttpResponse, IdHeader }
 import akka.http.scaladsl.server.directives.HttpRequestWithEntity
 
 trait LoggingInformation[-T] {
@@ -32,6 +33,13 @@ object LoggingInformation {
         "method" -> req.method.value.toString,
         "headers" -> req.headers.map(header => s"${header.name}: ${header.value}"),
         "cookies" -> req.cookies.map(cookie => s"${cookie.name}: ${cookie.value}")
+      )
+
+  implicit val httpResponseInformation: LoggingInformation[HttpResponse] =
+    (elem: HttpResponse) =>
+      Json.obj(
+        "status" -> elem.status.toString(),
+        "headers" -> elem.headers.map(header => s"${header.name}: ${header.value}")
       )
 
   implicit val exceptionWithHttpRequest: LoggingInformation[(Exception, HttpRequest)] =
@@ -83,4 +91,14 @@ object LoggingInformation {
         httpRequestInformation(req) ++ Json.obj("body" -> body)
       }
     }
+
+  implicit def serviceRequestResponse[T]: LoggingInformation[ServiceRequestResponse[T]] =
+    (elem: ServiceRequestResponse[T]) =>
+      Json.obj(
+        "service" -> elem.service.nameForLoggingString,
+        "epoch" -> s"${elem.epoch}ms",
+        "request" -> httpRequestWithEntity(elem.originalRequest),
+        "serviceRequest" -> httpRequestWithEntity(elem.request),
+        "serviceResponse" -> httpResponseInformation(elem.response)
+      )
 }
