@@ -1,13 +1,13 @@
-package challenge.logger.impl
-
-import challenge.guice.Modules
-import challenge.logger.Logger
+package org.byrde.logger.impl
 
 import com.google.inject.Inject
 
-import akka.event.{Logging, LoggingAdapter}
+import org.byrde.logger.Logger
 
-class ApplicationLogger @Inject()(modules: Modules) extends Logger {
+import akka.actor.ActorSystem
+import akka.event.{ Logging, LoggingAdapter }
+
+class ApplicationLogger @Inject() (actorSystem: ActorSystem) extends Logger {
   override protected def logger: LoggingAdapter =
-    Logging(modules.akka.actorSystem, getClass)
+    Logging(actorSystem, getClass)
 }

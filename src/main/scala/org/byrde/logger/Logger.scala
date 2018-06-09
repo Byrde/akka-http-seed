@@ -1,4 +1,4 @@
-package challenge.logger
+package org.byrde.logger
 
 import play.api.libs.json.JsObject
 

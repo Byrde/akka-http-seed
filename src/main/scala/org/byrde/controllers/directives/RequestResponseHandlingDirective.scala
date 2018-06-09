@@ -1,13 +1,13 @@
-package akka.http.scaladsl.server.directives
+package org.byrde.controllers.directives
 
 import java.util.UUID
 
-import challenge.logger.impl.{ErrorLogger, RequestLogger}
-import challenge.models.exceptions.ServiceResponseException
+import org.byrde.logger.impl.{ ErrorLogger, RequestLogger }
+import org.byrde.models.exceptions.JsonServiceResponseException
 
-import akka.http.scaladsl.model.{HttpRequest, IdHeader}
+import akka.http.scaladsl.model.{ HttpRequest, IdHeader }
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.{Directive0, Directive1, ExceptionHandler, Route}
+import akka.http.scaladsl.server.{ Directive0, Directive1, ExceptionHandler, Route }
 
 trait RequestResponseHandlingDirective {
   def requestLogger: RequestLogger
@@ -31,17 +31,17 @@ trait RequestResponseHandlingDirective {
 
   private def exceptionHandler(req: HttpRequest): ExceptionHandler =
     ExceptionHandler {
-      case exception: Exception =>
+      case throwable: Throwable =>
         val serviceResponseException =
-          exception match {
-            case serviceResponseException: ServiceResponseException =>
+          throwable match {
+            case serviceResponseException: JsonServiceResponseException =>
               serviceResponseException
             case ex: Exception =>
-              ServiceResponseException(ex)
+              JsonServiceResponseException(ex)
           }
 
         errorLogger.error(serviceResponseException, req)
-        complete(serviceResponseException.status, serviceResponseException)
+        complete((serviceResponseException.status, serviceResponseException))
     }
 
   private def requestId: Directive1[(HttpRequest, IdHeader)] =
@@ -56,8 +56,8 @@ trait RequestResponseHandlingDirective {
     mapRequest { request =>
       request.copy(
         headers =
-          id +:
-            request.headers
+        id +:
+          request.headers
       )
     }
 

@@ -1,29 +1,34 @@
 package org.byrde
 
-import challenge.guice.Modules
+import org.byrde.configuration.Configuration
+import org.byrde.controllers.directives.RequestResponseHandlingDirective
+import org.byrde.guice.{ Akka, ModulesSupport }
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.PathDirectives.path
-import akka.http.scaladsl.server.directives.{MarshallingEntityWithRequestDirective, RequestResponseHandlingDirective}
+import akka.http.scaladsl.server.directives.MarshallingEntityWithRequestDirective
 import akka.util.Timeout
 
-trait Routes extends RequestResponseHandlingDirective with MarshallingEntityWithRequestDirective {
-  def modules: Modules
+trait Routes extends ModulesSupport with RequestResponseHandlingDirective with MarshallingEntityWithRequestDirective {
+  def akka: Akka
+
+  def configuration: Configuration
 
   implicit lazy val timeout: Timeout =
-    modules.configuration.timeout
+    configuration.timeout
 
   implicit def system: ActorSystem =
-    modules.akka.actorSystem
+    akka.actorSystem
 
   lazy val defaultRoutes: Route =
     ???
 
   lazy val pathBindings =
     Map(
-      "api" -> defaultRoutes)
+      "api" -> defaultRoutes
+    )
 
   lazy val routes: Route =
     requestResponseHandler {

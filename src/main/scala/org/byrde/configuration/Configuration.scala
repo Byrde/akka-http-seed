@@ -1,21 +1,28 @@
-package challenge.configuration
+package org.byrde.configuration
 
 import com.google.inject.Inject
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.{ Config, ConfigFactory }
 
 import akka.util.Timeout
 
 import scala.concurrent.duration._
 
-class Configuration @Inject()() {
+class Configuration @Inject() () {
   lazy val underlyingConfig: Config =
     ConfigFactory.load().resolve()
+
+  lazy val server: Config =
+    underlyingConfig.getConfig("akka.server")
+
   lazy val name: String =
-    underlyingConfig.getString("akka.server.name")
+    server.getString("name")
+
   lazy val interface: String =
-    underlyingConfig.getString("akka.server.interface")
+    server.getString("interface")
+
   lazy val port: Int =
-    underlyingConfig.getInt("akka.server.port")
+    server.getInt(".port")
+
   lazy val timeout: Timeout =
     Timeout(underlyingConfig.getInt("akka.server.timeout") seconds)
 }

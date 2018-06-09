@@ -1,4 +1,4 @@
-lazy val akkaHttpVersion = "10.0.11"
+lazy val akkaHttpVersion = "10.1.0"
 lazy val akkaVersion    = "2.5.11"
 
 lazy val dependencyInjectionLibraries =
@@ -17,10 +17,8 @@ lazy val root =
       scalaVersion    := "2.12.4"
     )),
     name := "akka-http-seed",
-    resolvers ++=
-      Seq(
-        "byrdelibraries" at "https://dl.cloudsmith.io/public/byrde/libraries/maven/",
-        Resolver.bintrayRepo("hseeberger", "maven")),
+    resolvers +=
+      Resolver.bintrayRepo("hseeberger", "maven"),
     libraryDependencies ++=
       Seq(
         "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
@@ -31,6 +29,14 @@ lazy val root =
         "com.typesafe.akka" %% "akka-http-testkit"    % akkaHttpVersion % Test,
         "com.typesafe.akka" %% "akka-testkit"         % akkaVersion     % Test,
         "com.typesafe.akka" %% "akka-stream-testkit"  % akkaVersion     % Test,
-        "org.scalatest"     %% "scalatest"            % "3.0.1"         % Test,
-        "org.byrde"         %  "commons_2.11"         % "1.0.77") ++ dependencyInjectionLibraries :+ jsonParsingLibrary
+        "org.scalatest"     %% "scalatest"            % "3.0.1"         % Test) ++ dependencyInjectionLibraries :+ jsonParsingLibrary,
+    scalacOptions ++=
+      Seq(
+        "-unchecked",
+        "-deprecation",
+        "-Xlint",
+        "-Ywarn-dead-code",
+        "-language:_",
+        "-target:jvm-1.8",
+        "-encoding", "UTF-8")
   )

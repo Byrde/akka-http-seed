@@ -1,15 +1,15 @@
-package challenge.logger.impl
-
-import challenge.guice.Modules
-import challenge.logger.{Logger, LoggingInformation}
+package org.byrde.logger.impl
 
 import com.google.inject.Inject
 
-import akka.event.{Logging, LoggingAdapter}
+import org.byrde.logger.{ Logger, LoggingInformation }
 
-class ErrorLogger @Inject()(modules: Modules) extends Logger {
+import akka.actor.ActorSystem
+import akka.event.{ Logging, LoggingAdapter }
+
+class ErrorLogger @Inject() (actorSystem: ActorSystem) extends Logger {
   override protected val logger: LoggingAdapter =
-    Logging(modules.akka.actorSystem, getClass)
+    Logging(actorSystem, getClass)
 
   def error[T](throwable: Throwable, elem: T)(implicit loggingInformation: LoggingInformation[(Exception, T)]): Unit =
     error(new Exception(throwable), elem)

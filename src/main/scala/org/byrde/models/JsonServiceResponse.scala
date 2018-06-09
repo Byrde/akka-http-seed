@@ -1,27 +1,31 @@
-package challenge.models
+package org.byrde.models
 
-import play.api.libs.json.{JsObject, Json, Writes}
+import play.api.libs.json.{ JsObject, Json, Writes }
 
-object ServiceResponse {
-  implicit val writes: Writes[ServiceResponse[_]] =
-    (o: ServiceResponse[_]) => o.toJson
+object JsonServiceResponse {
+  implicit val writes: Writes[JsonServiceResponse[_]] =
+    (o: JsonServiceResponse[_]) => o.toJson
 
-  def apply[T](_status: Int, _code: Int, _response: T, _msg: String = "response")(implicit _writes: Writes[T]): ServiceResponse[T] =
-    new ServiceResponse[T] {
+  def apply[T](_status: Int, _code: Int, _response: T, _msg: String = "response")(implicit _writes: Writes[T]): JsonServiceResponse[T] =
+    new JsonServiceResponse[T] {
       override implicit val writes: Writes[T] =
         _writes
+
       override val msg: String =
         _msg
+
       override val code: Int =
         _code
+
       override val status: Int =
         _status
+
       override val response: T =
         _response
     }
 }
 
-trait ServiceResponse[T] {
+trait JsonServiceResponse[T] {
   implicit def writes: Writes[T]
 
   def msg: String
@@ -37,6 +41,7 @@ trait ServiceResponse[T] {
       "message" -> msg,
       "status" -> status,
       "code" -> code,
-      "response" -> Json.toJson(response))
+      "response" -> Json.toJson(response)
+    )
 }
 

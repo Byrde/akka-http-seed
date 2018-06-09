@@ -1,10 +1,11 @@
 package org.byrde
 
-import challenge.guice.Modules
-import challenge.guice.modules.ModuleBindings
-import challenge.logger.impl.{ErrorLogger, RequestLogger}
+import com.google.inject.{ Guice, Injector }
 
-import com.google.inject.Guice
+import org.byrde.configuration.Configuration
+import org.byrde.guice.{ Akka, ModulesProvider }
+import org.byrde.guice.modules.ModuleBindings
+import org.byrde.logger.impl.{ ErrorLogger, RequestLogger }
 
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
@@ -12,17 +13,31 @@ import akka.stream.ActorMaterializer
 object Server extends App with Routes {
   import net.codingwell.scalaguice.InjectorExtensions._
 
-  override lazy val modules: Modules =
-    Guice.createInjector(new ModuleBindings()).instance[Modules]
+  private val injector: Injector =
+    Guice.createInjector(new ModuleBindings())
 
-  override lazy val errorLogger: ErrorLogger =
-    modules.errorLogger
+  override lazy val modulesProvider: ModulesProvider =
+    injector.instance[ModulesProvider]
 
-  override lazy val requestLogger: RequestLogger =
-    modules.requestLogger
+  override lazy val akka: Akka =
+    modulesProvider.akka
+
+  override lazy val configuration: Configuration =
+    modulesProvider.configuration
+
+  override lazy val requestLogger =
+    injector.instance[RequestLogger]
+
+  override lazy val errorLogger =
+    injector.instance[ErrorLogger]
 
   implicit val materializer: ActorMaterializer =
-    modules.akka.actorMaterializer
+    akka.actorMaterializer
 
-  Http().bindAndHandle(routes, modules.configuration.interface, modules.configuration.port)
+  Http()
+    .bindAndHandle(
+      routes,
+      configuration.interface,
+      configuration.port
+    )
 }
