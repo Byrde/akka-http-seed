@@ -10,8 +10,11 @@ trait RejectionHandlerDirective extends CORSDirective {
     RejectionHandler
       .newBuilder()
       .handleAll[MethodRejection] { rejections =>
-        lazy val methods = rejections.map(_.supported)
-        lazy val names = methods.map(_.name).mkString(", ")
+        lazy val methods =
+          rejections.map(_.supported)
+
+        lazy val names =
+          methods.map(_.name).mkString(", ")
 
         cors {
           respondWithHeader(Allow(methods)) {
