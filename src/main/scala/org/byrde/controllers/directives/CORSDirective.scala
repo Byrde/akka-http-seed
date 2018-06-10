@@ -9,22 +9,22 @@ import akka.http.scaladsl.server.Route
 trait CORSDirective {
   def corsConfiguration: CORSConfiguration
 
-  val origins: Seq[RawHeader] =
+  lazy val origins: Seq[RawHeader] =
     corsConfiguration.origins.map {
       RawHeader("Access-Control-Allow-Origin", _)
     }
 
-  val allowedMethods: Seq[RawHeader] =
+  lazy val allowedMethods: Seq[RawHeader] =
     corsConfiguration.methods.map {
       RawHeader("Access-Control-Allow-Methods", _)
     }
 
-  val allowHeaders: Seq[RawHeader] =
+  lazy val allowHeaders: Seq[RawHeader] =
     corsConfiguration.headers.map {
       RawHeader("Access-Control-Allow-Headers", _)
     }
 
-  val exposeHeaders: Seq[RawHeader] =
+  lazy val exposeHeaders: Seq[RawHeader] =
     corsConfiguration.headers.map {
       RawHeader("Access-Control-Expose-Headers", _)
     }

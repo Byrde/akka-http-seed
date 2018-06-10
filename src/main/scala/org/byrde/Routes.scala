@@ -1,29 +1,29 @@
 package org.byrde
 
 import org.byrde.configuration.Configuration
-import org.byrde.controllers.directives.RequestResponseHandlingDirective
-import org.byrde.guice.{ Akka, ModulesSupport }
+import org.byrde.controllers.directives.{ MarshallingEntityWithRequestAndAttrDirective, RequestResponseHandlingDirective }
+import org.byrde.models.responses.CommonJsonServiceResponseDictionary.E0200
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.PathDirectives.path
-import akka.http.scaladsl.server.directives.MarshallingEntityWithRequestDirective
+import akka.stream.ActorMaterializer
 import akka.util.Timeout
 
-trait Routes extends ModulesSupport with RequestResponseHandlingDirective with MarshallingEntityWithRequestDirective {
-  def akka: Akka
-
+trait Routes extends RequestResponseHandlingDirective with MarshallingEntityWithRequestAndAttrDirective {
   def configuration: Configuration
 
-  implicit lazy val timeout: Timeout =
-    configuration.timeout
+  implicit def system: ActorSystem
 
-  implicit def system: ActorSystem =
-    akka.actorSystem
+  implicit def materializer: ActorMaterializer
+
+  implicit def timeout: Timeout
 
   lazy val defaultRoutes: Route =
-    ???
+    path("ping") {
+      complete(E0200("pong"))
+    }
 
   lazy val pathBindings =
     Map(

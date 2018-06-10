@@ -21,7 +21,7 @@ class Configuration @Inject() () {
     server.getString("interface")
 
   lazy val port: Int =
-    server.getInt(".port")
+    server.getInt("port")
 
   lazy val timeout: Timeout =
     Timeout(server.getInt("timeout") seconds)

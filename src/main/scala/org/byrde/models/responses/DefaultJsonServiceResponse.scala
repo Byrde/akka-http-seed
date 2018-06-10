@@ -1,4 +1,4 @@
-package org.byrde.models
+package org.byrde.models.responses
 
 import org.byrde.utils.WritesUtils
 

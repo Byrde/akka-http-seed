@@ -6,7 +6,7 @@ import org.byrde.logger.impl.ApplicationLogger
 
 import akka.http.scaladsl.server.directives.HttpRequestWithEntity
 
-case class Modules[T](
+class Modules[T](
   configuration: Configuration,
   akka: Akka,
   applicationLogger: ApplicationLogger
@@ -14,7 +14,7 @@ case class Modules[T](
 
 object Modules {
   def apply[T](modulesProvider: ModulesProvider)(implicit requestWithEntity: HttpRequestWithEntity[T]): Modules[T] =
-    Modules(
+    new Modules(
       modulesProvider.configuration,
       modulesProvider.akka,
       modulesProvider.applicationLogger

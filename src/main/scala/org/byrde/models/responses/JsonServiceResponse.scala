@@ -1,4 +1,4 @@
-package org.byrde.models
+package org.byrde.models.responses
 
 import play.api.libs.json.{ JsObject, Json, Writes }
 

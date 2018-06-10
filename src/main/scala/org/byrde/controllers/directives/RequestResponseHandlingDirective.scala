@@ -5,7 +5,7 @@ import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 import java.util.UUID
 
 import org.byrde.logger.impl.{ ErrorLogger, RequestLogger }
-import org.byrde.models.exceptions.JsonServiceResponseException
+import org.byrde.models.responses.exceptions.JsonServiceResponseException
 
 import play.api.libs.json.Json
 

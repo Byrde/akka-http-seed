@@ -2,17 +2,17 @@ package org.byrde.guice
 
 import com.google.inject.Inject
 
+import org.byrde.Modules
 import org.byrde.configuration.Configuration
 import org.byrde.logger.impl.ApplicationLogger
-import org.byrde.Modules
 
 import akka.http.libs.typedmap.TypedKey
 import akka.http.scaladsl.server.directives.HttpRequestWithEntity
 
-case class ModulesProvider @Inject() (
-    configuration: Configuration,
-    akka: Akka,
-    applicationLogger: ApplicationLogger
+class ModulesProvider @Inject() (
+    val configuration: Configuration,
+    val akka: Akka,
+    val applicationLogger: ApplicationLogger
 ) {
   def ModulesAttr[T]: TypedKey[Modules[T]] =
     TypedKey[Modules[T]]("Modules")

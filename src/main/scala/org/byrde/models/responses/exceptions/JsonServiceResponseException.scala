@@ -1,6 +1,6 @@
-package org.byrde.models.exceptions
+package org.byrde.models.responses.exceptions
 
-import org.byrde.models.DefaultJsonServiceResponse
+import org.byrde.models.responses.DefaultJsonServiceResponse
 
 import scala.util.control.NoStackTrace
 
@@ -9,10 +9,7 @@ case class JsonServiceResponseException(msg: String, code: Int, status: Int) ext
     new JsonServiceResponseException(message, code, status)
 
   def apply(throwable: Throwable): JsonServiceResponseException =
-    apply(new Exception(throwable))
-
-  def apply(exception: Exception): JsonServiceResponseException =
-    new JsonServiceResponseException(exception.getMessage, code, status)
+    new JsonServiceResponseException(throwable.getMessage, code, status)
 }
 
 object JsonServiceResponseException {
@@ -20,8 +17,5 @@ object JsonServiceResponseException {
   object E0500 extends JsonServiceResponseException("Internal Server Error", 500, 500)
 
   def apply(throwable: Throwable): JsonServiceResponseException =
-    apply(throwable)
-
-  def apply(ex: Exception): JsonServiceResponseException =
-    E0500.copy(msg = ex.getMessage)
+    E0500(throwable)
 }

@@ -42,12 +42,12 @@ object LoggingInformation {
         "headers" -> elem.headers.map(header => s"${header.name}: ${header.value}")
       )
 
-  implicit val exceptionWithHttpRequest: LoggingInformation[(Exception, HttpRequest)] =
-    (elem: (Exception, HttpRequest)) => {
+  implicit val exceptionWithHttpRequest: LoggingInformation[(Throwable, HttpRequest)] =
+    (elem: (Throwable, HttpRequest)) => {
       val (ex, req) =
         elem._1 -> elem._2
 
-      def serializeException(ex: Exception): JsObject = {
+      def serializeException(ex: Throwable): JsObject = {
         def loop(throwable: Throwable): JsObject = {
           val causedBy =
             Option(throwable)
