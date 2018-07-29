@@ -1,9 +1,8 @@
 package org.byrde.logger
 
-import org.byrde.services.ServiceRequestResponse
+import org.byrde.commons.utils.OptionUtils._
 
 import play.api.libs.json.{ JsObject, JsString, Json }
-import org.byrde.utils.OptionUtils._
 
 import akka.http.scaladsl.model.{ HttpRequest, HttpResponse, IdHeader }
 import akka.http.scaladsl.server.directives.HttpRequestWithEntity
@@ -26,79 +25,84 @@ trait LoggingInformation[-T] {
  */
 object LoggingInformation {
   implicit val httpRequestInformation: LoggingInformation[HttpRequest] =
-    (req: HttpRequest) =>
-      Json.obj(
-        "id" -> req.header[IdHeader].fold("None")(header => s"${header.id}"),
-        "uri" -> req.uri.toString,
-        "method" -> req.method.value.toString,
-        "headers" -> req.headers.map(header => s"${header.name}: ${header.value}"),
-        "cookies" -> req.cookies.map(cookie => s"${cookie.name}: ${cookie.value}")
-      )
+    new LoggingInformation[HttpRequest] {
+      override def log(elem: HttpRequest): JsObject =
+        Json.obj(
+          "id" -> elem.header[IdHeader].fold("None")(header => s"${header.id}"),
+          "uri" -> elem.uri.toString,
+          "method" -> elem.method.value.toString,
+          "headers" -> elem.headers.map(header => s"${header.name}: ${header.value}"),
+          "cookies" -> elem.cookies.map(cookie => s"${cookie.name}: ${cookie.value}")
+        )
+    }
+
+  implicit def httpRequestWithEntity[T]: LoggingInformation[HttpRequestWithEntity[T]] =
+    new LoggingInformation[HttpRequestWithEntity[T]] {
+      override def log(elem: HttpRequestWithEntity[T]): JsObject = {
+        val req =
+          elem.request
+
+        val bodyOpt =
+          if (elem.body.toString.isEmpty)
+            None
+          else
+            elem.body.toString.?
+
+        bodyOpt.fold(httpRequestInformation(req)) { body =>
+          httpRequestInformation(req) ++ Json.obj("body" -> body)
+        }
+      }
+    }
 
   implicit val httpResponseInformation: LoggingInformation[HttpResponse] =
-    (elem: HttpResponse) =>
-      Json.obj(
-        "status" -> elem.status.toString(),
-        "headers" -> elem.headers.map(header => s"${header.name}: ${header.value}")
-      )
+    new LoggingInformation[HttpResponse] {
+      override def log(elem: HttpResponse): JsObject =
+        Json.obj(
+          "status" -> elem.status.toString(),
+          "headers" -> elem.headers.map(header => s"${header.name}: ${header.value}")
+        )
+    }
 
-  implicit val exceptionWithHttpRequest: LoggingInformation[(Throwable, HttpRequest)] =
-    (elem: (Throwable, HttpRequest)) => {
-      val (ex, req) =
-        elem._1 -> elem._2
-
-      def serializeException(ex: Throwable): JsObject = {
-        def loop(throwable: Throwable): JsObject = {
-          val causedBy =
-            Option(throwable)
-              .fold(Json.obj()) { cause =>
-                Json.obj("causedBy" -> loop(cause.getCause))
+  implicit val exception: LoggingInformation[Throwable] =
+    new LoggingInformation[Throwable] {
+      override def log(elem: Throwable): JsObject = {
+        def serializeException(ex: Throwable): JsObject = {
+          def loop(throwable: Throwable): JsObject = {
+            val causedBy =
+              Option(throwable) match {
+                case Some(cause) =>
+                  Json.obj("causedBy" -> loop(cause.getCause))
+                case None =>
+                  Json.obj()
               }
+            Json.obj(
+              "class" -> ex.getClass.getName(),
+              "message" -> ex.getMessage,
+              "stackTrace" -> ex.getStackTrace.map(_.toString)
+            ) ++ causedBy
+          }
 
           Json.obj(
             "class" -> ex.getClass.getName(),
             "message" -> ex.getMessage,
             "stackTrace" -> ex.getStackTrace.map(_.toString)
-          ) ++ causedBy
+          ) ++ loop(ex.getCause)
         }
 
         Json.obj(
-          "class" -> ex.getClass.getName(),
-          "message" -> ex.getMessage,
-          "stackTrace" -> ex.getStackTrace.map(_.toString)
-        ) ++ loop(ex.getCause)
-      }
-
-      httpRequestInformation(req) ++
-        Json.obj(
-          "message" -> ex.getMessage,
-          "exception" -> serializeException(ex)
+          "message" -> elem.getMessage,
+          "exception" -> serializeException(elem)
         )
-    }
-
-  implicit def httpRequestWithEntity[T]: LoggingInformation[HttpRequestWithEntity[T]] =
-    (reqWithEntity: HttpRequestWithEntity[T]) => {
-      val req =
-        reqWithEntity.request
-
-      val bodyOpt =
-        if (reqWithEntity.body.toString.isEmpty)
-          None
-        else
-          reqWithEntity.body.toString.?
-
-      bodyOpt.fold(httpRequestInformation(req)) { body =>
-        httpRequestInformation(req) ++ Json.obj("body" -> body)
       }
     }
 
-  implicit def serviceRequestResponse[T]: LoggingInformation[ServiceRequestResponse[T]] =
-    (elem: ServiceRequestResponse[T]) =>
-      Json.obj(
-        "service" -> elem.service.nameForLoggingString,
-        "epoch" -> s"${elem.epoch}ms",
-        "request" -> httpRequestWithEntity(elem.originalRequest),
-        "serviceRequest" -> httpRequestWithEntity(elem.request),
-        "serviceResponse" -> httpResponseInformation(elem.response)
-      )
+  implicit val exceptionWithHttpRequest: LoggingInformation[(Throwable, HttpRequest)] =
+    new LoggingInformation[(Throwable, HttpRequest)] {
+      override def log(elem: (Throwable, HttpRequest)): JsObject = {
+        val (ex, req) =
+          elem._1 -> elem._2
+
+        httpRequestInformation(req) ++ exception(ex)
+      }
+    }
 }

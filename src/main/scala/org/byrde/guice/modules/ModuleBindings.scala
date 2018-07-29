@@ -1,9 +1,7 @@
 package org.byrde.guice.modules
 
 import net.codingwell.scalaguice.ScalaModule
-
 import com.google.inject.AbstractModule
-
 import org.byrde.configuration.Configuration
 import org.byrde.guice.{ Akka, ModulesProvider }
 import org.byrde.logger.impl.{ ApplicationLogger, ErrorLogger, RequestLogger }

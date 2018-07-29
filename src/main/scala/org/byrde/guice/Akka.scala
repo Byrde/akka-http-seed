@@ -10,7 +10,4 @@ import akka.stream.ActorMaterializer
 class Akka @Inject() (configuration: Configuration) {
   val system: ActorSystem =
     ActorSystem(configuration.name, configuration.underlyingConfig)
-
-  val materializer: ActorMaterializer =
-    ActorMaterializer()(system)
 }

@@ -1,4 +1,4 @@
-package org.byrde.controllers.directives
+package org.byrde.controllers.support
 
 import org.byrde.configuration.CORSConfiguration
 
@@ -6,7 +6,7 @@ import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.server.Directives.respondWithHeaders
 import akka.http.scaladsl.server.Route
 
-trait CORSDirective {
+trait CORSSupport {
   def corsConfiguration: CORSConfiguration
 
   lazy val origins: Seq[RawHeader] =

@@ -1,16 +1,18 @@
 package org.byrde
 
 import com.google.inject.{ Guice, Injector }
-
 import org.byrde.configuration.Configuration
 import org.byrde.guice.ModulesProvider
 import org.byrde.guice.modules.ModuleBindings
 import org.byrde.logger.impl.{ ErrorLogger, RequestLogger }
+import org.byrde.utils.ThreadPools
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.stream.ActorMaterializer
 import akka.util.Timeout
+
+import scala.concurrent.ExecutionContext
 
 object Server extends App with Routes {
   import net.codingwell.scalaguice.InjectorExtensions._
@@ -27,20 +29,23 @@ object Server extends App with Routes {
   override lazy val errorLogger =
     injector.instance[ErrorLogger]
 
-  override lazy val configuration: Configuration =
+  lazy val configuration: Configuration =
     modulesProvider.configuration
 
   override lazy val corsConfiguration =
     modulesProvider.configuration.corsConfiguration
 
-  implicit lazy val materializer: ActorMaterializer =
-    modulesProvider.akka.materializer
+  implicit val ec: ExecutionContext =
+    ThreadPools.Global
 
   implicit lazy val system: ActorSystem =
     modulesProvider.akka.system
 
   implicit lazy val timeout: Timeout =
     configuration.timeout
+
+  implicit lazy val materializer: ActorMaterializer =
+    ActorMaterializer()
 
   Http()
     .bindAndHandle(

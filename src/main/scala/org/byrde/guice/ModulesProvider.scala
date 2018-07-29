@@ -1,13 +1,13 @@
 package org.byrde.guice
 
-import com.google.inject.Inject
-
 import org.byrde.Modules
 import org.byrde.configuration.Configuration
 import org.byrde.logger.impl.ApplicationLogger
 
 import akka.http.libs.typedmap.TypedKey
 import akka.http.scaladsl.server.directives.HttpRequestWithEntity
+
+import com.google.inject.Inject
 
 class ModulesProvider @Inject() (
     val configuration: Configuration,

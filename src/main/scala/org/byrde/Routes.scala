@@ -1,22 +1,24 @@
 package org.byrde
 
-import org.byrde.configuration.Configuration
-import org.byrde.controllers.directives.{ MarshallingEntityWithRequestAndAttrDirective, RequestResponseHandlingDirective }
-import org.byrde.models.responses.CommonJsonServiceResponseDictionary.E0200
+import org.byrde.commons.models.services.CommonsServiceResponseDictionary.E0200
+import org.byrde.controllers.directives.MarshallingEntityWithRequestAndAttrDirective
+import org.byrde.controllers.support.{ RequestResponseHandlingSupport, RouteSupport }
+import org.byrde.guice.ModulesProvider
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.server.directives.PathDirectives.path
-import akka.stream.ActorMaterializer
 import akka.util.Timeout
 
-trait Routes extends RequestResponseHandlingDirective with MarshallingEntityWithRequestAndAttrDirective {
-  def configuration: Configuration
+import scala.concurrent.ExecutionContext
+
+trait Routes extends RouteSupport with RequestResponseHandlingSupport with MarshallingEntityWithRequestAndAttrDirective {
+  def modulesProvider: ModulesProvider
+
+  implicit def ec: ExecutionContext
 
   implicit def system: ActorSystem
-
-  implicit def materializer: ActorMaterializer
 
   implicit def timeout: Timeout
 

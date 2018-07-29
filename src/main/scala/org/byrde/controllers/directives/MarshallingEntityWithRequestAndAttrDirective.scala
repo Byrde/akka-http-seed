@@ -4,8 +4,8 @@ import org.byrde.Modules
 import org.byrde.guice.ModulesProvider
 
 import akka.http.libs.typedmap.{ TypedEntry, TypedMap }
-import akka.http.scaladsl.server.directives.BasicDirectives.provide
 import akka.http.scaladsl.server._
+import akka.http.scaladsl.server.directives.BasicDirectives.provide
 import akka.http.scaladsl.server.directives.{ HttpRequestWithEntity, MarshallingEntityWithRequestDirective }
 import akka.http.scaladsl.unmarshalling.{ FromEntityUnmarshaller, FromRequestUnmarshaller }
 

@@ -9,16 +9,25 @@ lazy val dependencyInjectionLibraries =
 lazy val jsonParsingLibrary =
   "com.typesafe.play" %% "play-json" % "2.6.9"
 
+lazy val utils =
+  Seq(
+    "io.igl" %% "jwt" % "1.2.2",
+    "de.svenkubiak" % "jBCrypt" % "0.4.1",
+    "org.byrde" % "commons_2.11" % "1.0.140",
+    "com.typesafe.play" %% "play-ws" % "2.6.9")
+
 lazy val root =
   (project in file("."))
   .settings(
     inThisBuild(List(
       organization    := "org.byrde",
-      scalaVersion    := "2.12.4"
+      scalaVersion    := "2.11.11"
     )),
     name := "akka-http-seed",
-    resolvers +=
-      Resolver.bintrayRepo("hseeberger", "maven"),
+    resolvers ++=
+      Seq(
+        "byrdelibraries" at "https://dl.cloudsmith.io/public/byrde/libraries/maven/",
+        Resolver.bintrayRepo("hseeberger", "maven")),
     libraryDependencies ++=
       Seq(
         "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
@@ -31,7 +40,7 @@ lazy val root =
         "com.typesafe.akka" %% "akka-http-testkit"    % akkaHttpVersion % Test,
         "com.typesafe.akka" %% "akka-testkit"         % akkaVersion     % Test,
         "com.typesafe.akka" %% "akka-stream-testkit"  % akkaVersion     % Test,
-        "org.scalatest"     %% "scalatest"            % "3.0.1"         % Test) ++ dependencyInjectionLibraries :+ jsonParsingLibrary,
+        "org.scalatest"     %% "scalatest"            % "3.0.1"         % Test) ++ utils ++ dependencyInjectionLibraries :+ jsonParsingLibrary,
     scalacOptions ++=
       Seq(
         "-unchecked",
