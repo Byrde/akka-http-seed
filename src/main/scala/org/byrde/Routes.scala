@@ -35,7 +35,7 @@ trait Routes extends RouteSupport with RequestResponseHandlingSupport with Marsh
   lazy val routes: Route =
     requestResponseHandler {
       pathBindings.map {
-        case (k, v) => path(k)(v)
+        case (k, v) => pathPrefix(k)(v)
       } reduce (_ ~ _)
     }
 }

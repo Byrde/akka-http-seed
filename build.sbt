@@ -12,8 +12,8 @@ lazy val jsonParsingLibrary =
 lazy val utils =
   Seq(
     "io.igl" %% "jwt" % "1.2.2",
+    "org.byrde" %% "commons" % "160",
     "de.svenkubiak" % "jBCrypt" % "0.4.1",
-    "org.byrde" % "commons_2.11" % "1.0.140",
     "com.typesafe.play" %% "play-ws" % "2.6.9")
 
 lazy val root =
@@ -21,9 +21,9 @@ lazy val root =
   .settings(
     inThisBuild(List(
       organization    := "org.byrde",
-      scalaVersion    := "2.11.11"
+      scalaVersion    := "2.12.6"
     )),
-    name := "akka-http-seed",
+    name := "simple-reviews-messaging",
     resolvers ++=
       Seq(
         "byrdelibraries" at "https://dl.cloudsmith.io/public/byrde/libraries/maven/",
