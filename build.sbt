@@ -23,7 +23,7 @@ lazy val root =
       organization    := "org.byrde",
       scalaVersion    := "2.12.6"
     )),
-    name := "simple-reviews-messaging",
+    name := "akka-http-seed",
     resolvers ++=
       Seq(
         "byrdelibraries" at "https://dl.cloudsmith.io/public/byrde/libraries/maven/",
