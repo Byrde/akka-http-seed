@@ -57,7 +57,11 @@
         <appender-ref ref="APPLICATION-APPENDER"/>
     </logger>
 
-    <logger name="scala.slick.jdbc.JdbcBackend.statement" level="OFF">
+    <logger name="scala.slick.jdbc.JdbcBackend.statement" level="ERROR">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <logger name="akka.event.slf4j.Slf4jLogger" level="ERROR">
         <appender-ref ref="STDOUT" />
     </logger>
 

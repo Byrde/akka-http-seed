@@ -2,6 +2,7 @@ package org.byrde
 
 import com.google.inject.{ Guice, Injector }
 import org.byrde.configuration.Configuration
+import org.byrde.controllers.Routes
 import org.byrde.guice.ModulesProvider
 import org.byrde.guice.modules.ModuleBindings
 import org.byrde.logger.impl.{ ErrorLogger, RequestLogger }

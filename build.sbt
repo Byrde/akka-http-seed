@@ -12,7 +12,7 @@ lazy val jsonParsingLibrary =
 lazy val utils =
   Seq(
     "io.igl" %% "jwt" % "1.2.2",
-    "org.byrde" %% "commons" % "160",
+    "org.byrde" %% "commons" % "166",
     "de.svenkubiak" % "jBCrypt" % "0.4.1",
     "com.typesafe.play" %% "play-ws" % "2.6.9")
 

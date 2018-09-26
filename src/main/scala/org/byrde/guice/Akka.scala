@@ -1,11 +1,10 @@
 package org.byrde.guice
 
-import com.google.inject.Inject
-
 import org.byrde.configuration.Configuration
 
+import com.google.inject.Inject
+
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 
 class Akka @Inject() (configuration: Configuration) {
   val system: ActorSystem =
