@@ -16,9 +16,10 @@ import scala.util.{Failure, Success}
 trait RouteSupport extends PlayJsonSupport {
   def asyncJson[T](
     fn: Future[T],
+    title: String = "Success",
     Err: Throwable => Throwable = identity
   )(implicit writes: Writes[T]): Route =
-    async(fn, (res: T) => complete(ServiceResponse(res).toJson), Err)
+    async(fn, (res: T) => complete(ServiceResponse(title, res).toJson), Err)
 
   def asyncServiceResponse[T <: ServiceResponse[_]](
     fn: Future[T],
