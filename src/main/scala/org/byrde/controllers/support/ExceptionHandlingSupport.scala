@@ -60,7 +60,7 @@ trait ExceptionHandlingSupport extends PlayJsonSupport with CORSSupport {
           Try(Json.parse(response))
             .toOption
             .getOrElse(JsNull)
-            .validate[TransientServiceResponse[String]](ServiceResponse.reads(JsonUtils.Format.string("response"))) match {
+            .validate[TransientServiceResponse[String]](ServiceResponse.reads(JsonUtils.Format.string(ServiceResponse.message))) match {
               case JsSuccess(transientServiceResponse, _) =>
                 errorLogger.error(ServiceResponseException(transientServiceResponse))
 
