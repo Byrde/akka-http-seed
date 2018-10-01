@@ -6,6 +6,7 @@ import org.byrde.commons.models.services.ServiceResponse.TransientServiceRespons
 import org.byrde.commons.utils.JsonUtils
 import org.byrde.commons.utils.exception.{ ClientException, ServiceResponseException }
 import org.byrde.logger.impl.ErrorLogger
+import org.byrde.utils.TransientServiceResponseRejectionHandler
 
 import play.api.libs.json.{ JsNull, JsSuccess, Json }
 import akka.http.scaladsl.model.{ ContentTypes, HttpEntity, HttpRequest, HttpResponse }
@@ -46,6 +47,7 @@ trait ExceptionHandlingSupport extends PlayJsonSupport with CORSSupport {
         }
       }
       .result()
+      .withFallback(TransientServiceResponseRejectionHandler.handler)
       .mapRejectionResponse {
         case res @ HttpResponse(_status, _, ent: HttpEntity.Strict, _) =>
           val status =

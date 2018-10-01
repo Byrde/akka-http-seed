@@ -2,23 +2,29 @@ package org.byrde.controllers.support
 
 import org.byrde.commons.models.services.ServiceResponse
 import org.byrde.models.exceptions.RejectionException
+import org.byrde.utils.Codes
 
 import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
 
-import akka.http.scaladsl.server.Directives.{complete, _}
+import akka.http.scaladsl.server.Directives.{ complete, _ }
 import akka.http.scaladsl.server.Route
 
 import play.api.libs.json.Writes
 
 import scala.concurrent.Future
-import scala.util.{Failure, Success}
+import scala.util.{ Failure, Success }
 
 trait RouteSupport extends PlayJsonSupport {
+  val SuccessCode: Int =
+    Codes.Success
+
   def asyncJson[T](
     fn: Future[T],
+    title: String = "Success",
+    code: Int = SuccessCode,
     Err: Throwable => Throwable = identity
   )(implicit writes: Writes[T]): Route =
-    async(fn, (res: T) => complete(ServiceResponse(res).toJson), Err)
+    async(fn, (res: T) => complete(ServiceResponse(title, code, res).toJson), Err)
 
   def asyncServiceResponse[T <: ServiceResponse[_]](
     fn: Future[T],
