@@ -1,20 +1,22 @@
-lazy val akkaHttpVersion = "10.1.0"
-lazy val akkaVersion    = "2.5.11"
+lazy val byrdeVersion     = "242"
+
+lazy val byrdeLibraries =
+  Seq(
+    "org.byrde" %% "akka-http" % byrdeVersion)
 
 lazy val dependencyInjectionLibraries =
   Seq(
-    "com.google.inject.extensions" % "guice-assistedinject" % "4.1.0",
-    "net.codingwell" %% "scala-guice" % "4.1.0")
+    "com.google.inject.extensions"  % "guice-assistedinject"  % "4.1.0",
+    "net.codingwell"                %% "scala-guice"          % "4.1.0")
 
 lazy val jsonParsingLibrary =
   "com.typesafe.play" %% "play-json" % "2.6.9"
 
-lazy val utils =
+lazy val utilsLibraries =
   Seq(
-    "io.igl" %% "jwt" % "1.2.2",
-    "org.byrde" %% "commons" % "166",
-    "de.svenkubiak" % "jBCrypt" % "0.4.1",
-    "com.typesafe.play" %% "play-ws" % "2.6.9")
+    "io.igl"            %% "jwt"      % "1.2.2",
+    "com.typesafe.play" %% "play-ws"  % "2.6.9",
+    "de.svenkubiak"     % "jBCrypt"   % "0.4.1")
 
 lazy val root =
   (project in file("."))
@@ -29,18 +31,7 @@ lazy val root =
         "byrdelibraries" at "https://dl.cloudsmith.io/public/byrde/libraries/maven/",
         Resolver.bintrayRepo("hseeberger", "maven")),
     libraryDependencies ++=
-      Seq(
-        "com.typesafe.akka" %% "akka-http"            % akkaHttpVersion,
-        "com.typesafe.akka" %% "akka-http-xml"        % akkaHttpVersion,
-        "com.typesafe.akka" %% "akka-slf4j"           % akkaVersion,
-        "com.typesafe.akka" %% "akka-stream"          % akkaVersion,
-        "de.heikoseeberger" %% "akka-http-play-json"  % "1.17.0",
-        "ch.qos.logback"    % "logback-classic"       % "1.2.3",
-
-        "com.typesafe.akka" %% "akka-http-testkit"    % akkaHttpVersion % Test,
-        "com.typesafe.akka" %% "akka-testkit"         % akkaVersion     % Test,
-        "com.typesafe.akka" %% "akka-stream-testkit"  % akkaVersion     % Test,
-        "org.scalatest"     %% "scalatest"            % "3.0.1"         % Test) ++ utils ++ dependencyInjectionLibraries :+ jsonParsingLibrary,
+      byrdeLibraries ++ utilsLibraries ++ dependencyInjectionLibraries :+ jsonParsingLibrary,
     scalacOptions ++=
       Seq(
         "-unchecked",
