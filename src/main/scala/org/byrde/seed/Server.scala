@@ -34,6 +34,5 @@ object Server extends App with ServerLike {
     .bindAndHandle(
       routes,
       provider.config.interface,
-      provider.config.port
-    )
+      provider.config.port)
 }

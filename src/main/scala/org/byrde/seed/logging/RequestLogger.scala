@@ -19,8 +19,7 @@ class RequestLogger @Inject() (akka: AkkaLike) extends HttpRequestLogging {
     val innerRequest =
       Json.obj(
         "status" -> JsString(status),
-        "epoch" -> JsString(s"${epoch}ms")
-      )
+        "epoch" -> JsString(s"${epoch}ms"))
 
     logger.info((innerRequest ++ loggingInformation.format(req)).toString())
   }

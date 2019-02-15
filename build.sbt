@@ -1,4 +1,4 @@
-lazy val byrdeVersion = "245"
+lazy val byrdeVersion = "250"
 
 lazy val byrde =
   Seq(
@@ -12,7 +12,7 @@ lazy val root =
   .settings(
     inThisBuild(List(
       organization    := "org.byrde",
-      scalaVersion    := "2.12.6")),
+      scalaVersion    := "2.12.7")),
     name := "akka-http-seed",
     resolvers +=
       ("byrdelibraries" at "https://dl.cloudsmith.io/public/byrde/libraries/maven/"),

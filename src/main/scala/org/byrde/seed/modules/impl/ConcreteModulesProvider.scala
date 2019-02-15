@@ -16,10 +16,10 @@ class ConcreteModulesProvider @Inject() (
     val RequestLogger: HttpRequestLogging,
     val ErrorLogger: HttpErrorLogging
 ) extends ModulesProvider {
-  lazy val SuccessCode =
+  lazy val SuccessCode: Int =
     Codes.Success
 
-  lazy val ErrorCode =
+  lazy val ErrorCode: Int =
     Codes.Error
 }
 
