@@ -12,7 +12,7 @@ lazy val root =
   .settings(
     inThisBuild(List(
       organization    := "org.byrde",
-      scalaVersion    := "2.12.7")),
+      scalaVersion    := "2.12.8")),
     name := "akka-http-seed",
     resolvers +=
       ("byrdelibraries" at "https://dl.cloudsmith.io/public/byrde/libraries/maven/"),
