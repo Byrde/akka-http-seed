@@ -1,4 +1,4 @@
-lazy val byrdeVersion = "250"
+lazy val byrdeVersion = "1.1.282"
 
 lazy val byrde =
   Seq(
