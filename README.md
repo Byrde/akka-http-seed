@@ -1,7 +1,7 @@
 # AkkaHttp Seed Project
 
 This is a starter application that gives you everything you need to start building an AkkaHttp application.
-Based off Byrde AkkaHttp Seed project, see: https://github.com/Byrde/akka-http-seed
+Based off Byrde AkkaHttp seed project, see: https://github.com/Byrde/akka-http-seed
 
 ## Running
 
